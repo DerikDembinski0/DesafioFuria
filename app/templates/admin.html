@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – FURIA Chat</title>
+  <link rel="icon" href="/static/images/favicon.ico">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100vh; width: 100vw; background-color: #111; color: white; font-family: sans-serif; overflow-x: hidden; }
+    .top-bar { width: 100%; height: 60px; background-color: yellow; color: black; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-weight: bold; border-bottom: 3px solid #000; position: fixed; top: 0; left: 0; z-index: 1000; }
+    .top-left { font-size: 22px; font-weight: 900; }
+    .top-left a { text-decoration: none; color: black; }
+    .top-left a:hover { text-decoration: underline; }
+    .top-right { display: flex; align-items: center; }
+    .top-right a { margin-left: 20px; text-decoration: none; color: black; font-size: 15px; transition: 0.2s; }
+    .top-right a:hover { text-decoration: underline; }
+    .avatar { width:42px; height:42px; object-fit:cover; border-radius:50%; margin-left:20px; border:2px solid #000; }
+
+    .container { max-width: 400px; margin: 100px auto; background-color: rgba(26,26,26,0.9); padding: 30px; border-radius:12px; box-shadow:0 0 15px rgba(255,255,0,0.2); color:white; }
+    h2 { margin-bottom:20px; color:yellow; text-align:center; }
+    form { display:flex; flex-direction:column; margin-bottom:30px; }
+    input[type=email] { padding:12px; font-size:14px; margin-bottom:20px; border:2px solid yellow; border-radius:8px; background-color:#000; color:white; outline:none; }
+    button { padding:12px; font-size:16px; font-weight:bold; background-color:yellow; color:black; border:none; border-radius:8px; cursor:pointer; transition:0.2s; }
+    button:hover { transform:scale(1.05); }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="top-left">
+      <a href="/chat">Chat<span style="font-weight:900;">FURIA</span></a>
+    </div>
+    <div class="top-right">
+      <a href="/painel">Minha Conta</a>
+      <a href="https://www.furia.gg/" target="_blank">Loja</a>
+      {% if user %}<img src="{{ user.foto_url or '/static/images/default_avatar.png' }}" alt="avatar" class="avatar">{% endif %}
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Promover Usuário a VIP</h2>
+    <form id="promote-form" action="/admin/promover" method="post">
+      <input type="email" id="promote-email" name="email" placeholder="Email do usuário" required>
+      <button type="submit">Promover</button>
+    </form>
+
+    <h2>Remover Usuário VIP</h2>
+    <form id="demote-form" action="/admin/remover" method="post">
+      <input type="email" id="demote-email" name="email" placeholder="Email do usuário VIP" required>
+      <button type="submit">Remover VIP</button>
+    </form>
+  </div>
+
+  <script>
+    async function handleForm(formId, successMsg, errorMsgBase) {
+      const form = document.getElementById(formId);
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch(form.action, { method: 'POST', body: formData });
+        if (response.ok) {
+          alert(successMsg);
+          form.reset();
+        } else {
+          const text = await response.text();
+          alert(errorMsgBase + text);
+        }
+      });
+    }
+    handleForm('promote-form', 'Usuário promovido a VIP com sucesso!', 'Erro ao promover: ');
+    handleForm('demote-form', 'Usuário removido do VIP com sucesso!', 'Erro ao remover VIP: ');
+  </script>
+</body>
+</html>

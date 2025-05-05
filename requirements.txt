@@ -1,0 +1,6 @@
+flask
+flask-socketio
+flask-mail
+python-dotenv
+email-validator
+```
