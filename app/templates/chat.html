@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>FURIA Chat</title>
+  <link rel="icon" href="/static/images/favicon.ico">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      background-color: #111;
+      font-family: sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    .top-bar {
+      width: 100%; height: 60px; background-color: yellow; color: black;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 30px; font-weight: bold; border-bottom: 3px solid #000;
+      position: fixed; top: 0; left: 0; z-index: 1000;
+    }
+    .top-left { font-size: 22px; font-weight: 900; }
+    .top-left a { text-decoration: none; color: black; }
+    .top-left a:hover { text-decoration: underline; }
+    .top-right { display: flex; align-items: center; }
+    .top-right a { margin-left: 20px; text-decoration: none; color: black; font-size: 15px; transition: 0.2s; }
+    .top-right a:hover { text-decoration: underline; }
+    .avatar { width: 42px; height: 42px; object-fit: cover; border-radius: 50%; margin-left: 20px; border: 2px solid #000; }
+
+    .wrapper {
+      display: flex;
+      height: calc(100vh - 60px);
+      margin-top: 60px;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .chat-container {
+      width: 25%;
+      background-color: #1a1a1a;
+      border-right: 2px solid yellow;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .chat-label {
+      text-align: center;
+      padding: 8px 0;
+      font-weight: bold;
+      background-color: yellow;
+      color: black;
+    }
+
+    .chat-header {
+      padding: 12px;
+      background-color: #000;
+      border-bottom: 2px solid yellow;
+    }
+    .chat-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .chat-tab {
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+    .chat-tab.inactive {
+      background-color: #333;
+      color: white;
+    }
+    .chat-tab.active {
+      background-color: yellow;
+      color: black;
+      border-color: yellow;
+      text-decoration: underline;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      max-height: 100%;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 2px solid yellow;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      outline: none;
+      background: #000;
+      color: white;
+    }
+    .chat-input button {
+      padding: 10px 15px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      background: yellow;
+      color: black;
+    }
+
+    .video-container {
+      flex: 1;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    iframe {
+      width: 95%;
+      height: 90%;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.15);
+    }
+  </style>
+</head>
+<body data-nick="{{ user.nick }}" data-vip="{{ 'true' if vip else 'false' }}">
+  <header class="top-bar">
+    <div class="top-left"><a href="/chat">Chat<span style="font-weight:900;">FURIA</span></a></div>
+    <div class="top-right">
+      <a href="/painel">Minha Conta</a>
+      <a href="https://www.furia.gg/" target="_blank">Loja</a>
+      {% if user %}
+        <img src="{{ user.foto_url or '/static/images/default_avatar.png' }}" alt="avatar" class="avatar">
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="wrapper">
+    <div class="chat-container">
+      <div class="chat-label">{{ 'Chat VIP' if vip else 'Chat Público' }}</div>
+      <div class="chat-header">
+        <div class="chat-tabs">
+          <a href="/chat" class="chat-tab {% if not vip %}active{% else %}inactive{% endif %}">Público</a>
+          {% if vip %}
+            <a href="/chat-vip" class="chat-tab {% if vip %}active{% else %}inactive{% endif %}">VIP</a>
+          {% else %}
+            <a href="/admin" class="chat-tab inactive">Torne-se VIP</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-box">
+        <!-- Mensagens ao vivo aqui -->
+      </div>
+
+      <form class="chat-input" id="chat-form">
+        <input type="text" id="msg-input" placeholder="Digite sua mensagem...">
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+
+    <div class="video-container">
+      <iframe src="https://player.twitch.tv/?channel={{ user.twitch_channel or 'gaules' }}&parent=localhost" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="/static/js/chat.js"></script>
+</body>
+</html>

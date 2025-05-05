@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirme seu e-mail – FURIA Chat</title>
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.2);
+      max-width: 400px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    a {
+      color: yellow;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🚀 Quase lá!</h2>
+    <p>Enviamos um link de confirmação para <strong>{{ email }}</strong>.</p>
+    <p>Verifique sua caixa de entrada e clique no link para ativar sua conta no FURIA Chat.</p>
+    <p>Não encontrou o e-mail? Confira sua aba de spam ou <a href="/">volte para o início</a>.</p>
+  </div>
+</body>
+</html>

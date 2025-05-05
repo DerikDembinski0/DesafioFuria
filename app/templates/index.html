@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>FURIA Chat</title>
+  
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-image: url("/static/images/fundo.webp");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background-color: rgba(26, 26, 26, 0.85); /* semi-transparente */
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.2);
+    }
+
+    h1 {
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      display: block;
+      width: 250px;
+      padding: 15px;
+      margin: 15px auto;
+      background-color: yellow;
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bem-vindo ao FURIA Chat</h1>
+    <a class="btn" href="/criar-conta">Criar Conta</a>
+    <a class="btn" href="/login-form">Fazer Login</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ 'Criar Conta' if modo == 'criar' else 'Fazer Login' }} – FURIA Chat</title>
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background-color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #1a1a1a;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.2);
+    }
+
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    input[type="date"] {
+      padding: 12px;
+      width: 250px;
+      font-size: 16px;
+      border: 2px solid yellow;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      outline: none;
+      background-color: #000;
+      color: white;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 250px;
+      padding: 15px;
+      background-color: yellow;
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      margin-top: -10px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-label input {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>{{ 'Criar Conta' if modo == 'criar' else 'Fazer Login' }}</h2>
+
+    <form action="{{ '/criar-conta' if modo == 'criar' else '/login' }}" method="post">
+      {% if modo == 'criar' %}
+        <input type="text" name="nome" placeholder="Nome completo" required><br>
+        <input type="date" name="nascimento" placeholder="Data de nascimento" required><br>
+        <input type="text" name="nick" placeholder="Seu nick no chat" required><br>
+      {% endif %}
+
+      <input type="email" name="email" placeholder="Digite seu e-mail" required><br>
+      <input type="password" name="senha" placeholder="{{ 'Crie uma senha' if modo == 'criar' else 'Sua senha' }}" required><br>
+
+      {% if modo != 'criar' %}
+        <label class="checkbox-label">
+          <input type="checkbox" name="manter"> Mantenha-me conectado
+        </label>
+      {% endif %}
+
+      <button type="submit" class="btn">{{ 'Criar Conta' if modo == 'criar' else 'Entrar' }}</button>
+    </form>
+  </div>
+</body>
+</html>
