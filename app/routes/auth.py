@@ -7,8 +7,21 @@ from app.models.pending_user import PendingUser
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+import requests
+from requests_oauthlib import OAuth1Session
+import os
 
 auth = Blueprint('auth', __name__)
+
+# ===== Discord Config =====
+DISCORD_CLIENT_ID = os.environ.get("DISCORD_CLIENT_ID")
+DISCORD_CLIENT_SECRET = os.environ.get("DISCORD_CLIENT_SECRET")
+DISCORD_REDIRECT_URI = os.environ.get("DISCORD_REDIRECT_URI")
+
+# ===== Twitter Config =====
+TWITTER_CONSUMER_KEY = os.environ.get("TWITTER_CONSUMER_KEY")
+TWITTER_CONSUMER_SECRET = os.environ.get("TWITTER_CONSUMER_SECRET")
+TWITTER_CALLBACK_URL = os.environ.get("TWITTER_CALLBACK_URL")
 
 @auth.before_app_request
 def limpar_pendentes_expirados():
@@ -155,7 +168,7 @@ def criar_conta_post():
     """
 
     msg = Message(
-        subject='🦁 Confirme seu cadastro no FURIA Chat',
+        subject='🧑‍🤝 Confirme seu cadastro no FURIA Chat',
         sender='noreply@furia.gg',
         recipients=[email],
         html=html_body
@@ -168,3 +181,86 @@ def criar_conta_post():
         return "Erro ao enviar e-mail. Tente novamente mais tarde.", 500
 
     return render_template('confirmacao.html', email=email)
+
+
+@auth.route('/discord/login')
+def discord_login():
+    discord_auth_url = (
+        f"https://discord.com/api/oauth2/authorize"
+        f"?client_id={DISCORD_CLIENT_ID}"
+        f"&response_type=code"
+        f"&redirect_uri={DISCORD_REDIRECT_URI}"
+        f"&scope=identify%20email"
+    )
+    return redirect(discord_auth_url)
+
+
+@auth.route('/auth/discord/callback')
+def discord_callback():
+    code = request.args.get("code")
+    data = {
+        "client_id": DISCORD_CLIENT_ID,
+        "client_secret": DISCORD_CLIENT_SECRET,
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": DISCORD_REDIRECT_URI,
+        "scope": "identify email",
+    }
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    r = requests.post("https://discord.com/api/oauth2/token", data=data, headers=headers)
+    r.raise_for_status()
+    access_token = r.json()["access_token"]
+    user_info = requests.get(
+        "https://discord.com/api/users/@me",
+        headers={"Authorization": f"Bearer {access_token}"}
+    ).json()
+
+    email = session.get("user")
+    user = User.query.filter_by(email=email).first()
+    if user:
+        user.discord_id = user_info["id"]
+        db.session.commit()
+
+    return redirect(url_for('main.painel'))
+
+
+@auth.route('/twitter/login')
+def twitter_login():
+    twitter = OAuth1Session(
+        TWITTER_CONSUMER_KEY,
+        client_secret=TWITTER_CONSUMER_SECRET,
+        callback_uri=TWITTER_CALLBACK_URL
+    )
+    request_token = twitter.fetch_request_token("https://api.twitter.com/oauth/request_token")
+    session["request_token"] = request_token
+    auth_url = twitter.authorization_url("https://api.twitter.com/oauth/authorize")
+    return redirect(auth_url)
+
+
+@auth.route('/auth/twitter/callback')
+def twitter_callback():
+    request_token = session.pop("request_token")
+    twitter = OAuth1Session(
+        TWITTER_CONSUMER_KEY,
+        client_secret=TWITTER_CONSUMER_SECRET,
+        resource_owner_key=request_token["oauth_token"],
+        resource_owner_secret=request_token["oauth_token_secret"],
+        verifier=request.args.get("oauth_verifier")
+    )
+    access_token = twitter.fetch_access_token("https://api.twitter.com/oauth/access_token")
+
+    email = session.get("user")
+    user = User.query.filter_by(email=email).first()
+    if user:
+        user.twitter_id = access_token["user_id"]
+        db.session.commit()
+
+    return redirect(url_for('main.painel'))
+
+
+@auth.route("/logout", methods=["POST"])
+def logout():
+    print("➡️ Logout acionado no servidor")
+    session.clear()
+    return render_template("index.html")
+

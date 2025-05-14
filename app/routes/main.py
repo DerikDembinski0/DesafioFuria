@@ -78,19 +78,12 @@ def upload_foto():
 
     return redirect(url_for('main.painel'))
 
-@main.route('/definir-live', methods=['POST'])
-def definir_live():
-    email = session.get('user')
-    if not email:
-        return redirect(url_for('main.index'))
-
+@main.route('/atualizar-twitch', methods=['POST'])
+def atualizar_twitch():
+    canal = request.form.get("canal")
+    email = session.get("user")
     user = User.query.filter_by(email=email).first()
-    if not user:
-        return redirect(url_for('main.index'))
-
-    canal = request.form.get('twitch_channel')
-    if canal:
+    if user and canal:
         user.twitch_channel = canal.strip().lower()
         db.session.commit()
-
-    return redirect(url_for('main.painel'))
+    return redirect(url_for("main.painel"))

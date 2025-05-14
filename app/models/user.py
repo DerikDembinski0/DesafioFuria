@@ -10,8 +10,10 @@ class User(db.Model):
     senha_hash = db.Column(db.String(256), nullable=True)
     is_vip = db.Column(db.Boolean, default=False)
     foto_url = db.Column(db.String(255), nullable=True)  # ✅ novo campo para imagem
-    twitter_id = db.Column(db.String(50), unique=True, nullable=True)  # ✅ novo campo para Twitter ID
+    twitter_id = db.Column(db.String(50), unique=True, nullable=True)  # ✅ ID do Twitter
+    discord_id = db.Column(db.String(50), unique=True, nullable=True)  # ✅ ID do Discord
     twitch_channel = db.Column(db.String(100))
+
     def set_password(self, senha):
         self.senha_hash = generate_password_hash(senha)
 
