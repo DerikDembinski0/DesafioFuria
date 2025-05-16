@@ -91,10 +91,23 @@
       overflow-y: auto;
       max-height: 100%;
     }
+
     .chat-input {
       display: flex;
+      align-items: center;
       border-top: 2px solid yellow;
+      position: relative;
     }
+
+    .chat-input button#emoji-button {
+      padding: 0 10px;
+      font-size: 20px;
+      background: #000;
+      border: none;
+      color: yellow;
+      cursor: pointer;
+    }
+
     .chat-input input {
       flex: 1;
       padding: 10px;
@@ -104,13 +117,36 @@
       background: #000;
       color: white;
     }
-    .chat-input button {
+
+    .chat-input button[type="submit"] {
       padding: 10px 15px;
       font-weight: bold;
       cursor: pointer;
       border: none;
       background: yellow;
       color: black;
+    }
+
+    #emoji-popup {
+      position: absolute;
+      bottom: 50px;
+      left: 10px;
+      background: #222;
+      border: 2px solid yellow;
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+      max-width: 240px;
+      max-height: 200px;
+      overflow-y: auto;
+      flex-wrap: wrap;
+      z-index: 9999;
+    }
+
+    #emoji-popup span {
+      font-size: 22px;
+      cursor: pointer;
+      margin: 5px;
     }
 
     .video-container {
@@ -161,8 +197,10 @@
       </div>
 
       <form class="chat-input" id="chat-form">
+        <button type="button" id="emoji-button">😀</button>
         <input type="text" id="msg-input" placeholder="Digite sua mensagem...">
         <button type="submit">Enviar</button>
+        <div id="emoji-popup"></div>
       </form>
     </div>
 
@@ -171,6 +209,7 @@
     </div>
   </div>
 
+  <!-- Scripts: ordem correta -->
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <script src="/static/js/chat.js"></script>
 </body>
