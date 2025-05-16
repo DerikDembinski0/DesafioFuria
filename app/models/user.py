@@ -9,7 +9,11 @@ class User(db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     senha_hash = db.Column(db.String(256), nullable=True)
     is_vip = db.Column(db.Boolean, default=False)
-    foto_url = db.Column(db.String(255), nullable=True)  # ✅ novo campo para imagem
+    foto_url = db.Column(
+        db.String(255),
+        nullable=True,
+        default='/static/images/default_avatar.png'  # ✅ Foto padrão para novos usuários
+    )
     twitter_id = db.Column(db.String(50), unique=True, nullable=True)  # ✅ ID do Twitter
     discord_id = db.Column(db.String(50), unique=True, nullable=True)  # ✅ ID do Discord
     twitch_channel = db.Column(db.String(100))
