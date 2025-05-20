@@ -169,28 +169,50 @@
 <body data-nick="{{ user.nick }}" data-vip="{{ 'true' if vip else 'false' }}">
   <header class="top-bar">
     <div class="top-left"><a href="/chat">Chat<span style="font-weight:900;">FURIA</span></a></div>
-    <div class="top-right">
-      <a href="/painel">Minha Conta</a>
-      <a href="https://www.furia.gg/" target="_blank">Loja</a>
-      {% if user %}
-        <img src="{{ user.foto_url or '/static/images/default_avatar.png' }}" alt="avatar" class="avatar">
-      {% endif %}
+<div class="top-right">
+  <a href="/news">Notícias</a>
+  <a href="/ranking">Ranking</a>
+  <a href="https://www.furia.gg/" target="_blank">Loja</a>
+  <a href="/painel">Minha Conta</a>
+  {% if user %}
+    <img src="{{ user.foto_url or '/static/images/default_avatar.png' }}" alt="avatar" class="avatar">
+  {% endif %}
+</div>
+
     </div>
   </header>
 
-  <div class="wrapper">
-    <div class="chat-container">
-      <div class="chat-label">{{ 'Chat VIP' if vip else 'Chat Público' }}</div>
-      <div class="chat-header">
-        <div class="chat-tabs">
-          <a href="/chat" class="chat-tab {% if not vip %}active{% else %}inactive{% endif %}">Público</a>
-          {% if vip %}
-            <a href="/chat-vip" class="chat-tab {% if vip %}active{% else %}inactive{% endif %}">VIP</a>
-          {% else %}
-            <a href="/admin" class="chat-tab inactive">Torne-se VIP</a>
-          {% endif %}
-        </div>
+<div class="wrapper">
+  <div class="chat-container">
+    <div class="chat-label">{{ 'Chat VIP' if vip else 'Chat Público' }}</div>
+    <div class="chat-header">
+      <div class="chat-tabs">
+        <a href="/chat" class="chat-tab {{ 'active' if request.path == '/chat' else 'inactive' }}">Público</a>
+        {% if vip %}
+          <a href="/chat-vip" class="chat-tab {{ 'active' if request.path == '/chat-vip' else 'inactive' }}">VIP</a>
+        {% else %}
+          <a href="/admin" class="chat-tab inactive">Torne-se VIP</a>
+        {% endif %}
       </div>
+    </div>
+
+    <div class="chat-messages" id="chat-box">
+      <!-- Mensagens ao vivo aqui -->
+    </div>
+
+    <form class="chat-input" id="chat-form">
+      <button type="button" id="emoji-button">😀</button>
+      <input type="text" id="msg-input" placeholder="Digite sua mensagem...">
+      <button type="submit">Enviar</button>
+      <div id="emoji-popup"></div>
+    </form>
+  </div>
+
+  <div class="video-container">
+    <iframe src="https://player.twitch.tv/?channel={{ user.twitch_channel or 'gaules' }}&parent=localhost" allowfullscreen></iframe>
+  </div>
+</div>
+
 
       <div class="chat-messages" id="chat-box">
         <!-- Mensagens ao vivo aqui -->

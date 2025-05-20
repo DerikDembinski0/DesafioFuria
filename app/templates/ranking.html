@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking de Atividade</title>
+  <link rel="icon" href="/static/images/favicon.ico">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .top-bar {
+      width: 100%;
+      height: 60px;
+      background-color: yellow;
+      color: black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+      font-weight: bold;
+      border-bottom: 3px solid #000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .top-left {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .top-left a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .top-left a:hover {
+      text-decoration: underline;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .top-right a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: black;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .top-right a:hover {
+      text-decoration: underline;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-left: 20px;
+      border: 2px solid #000;
+    }
+
+    main {
+      margin-top: 100px;
+      padding: 0 20px 40px;
+    }
+
+    h1 {
+      color: yellow;
+      border-left: 5px solid yellow;
+      padding-left: 15px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .ranking {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .rank-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1a1a1a;
+      padding: 15px 20px;
+      border: 2px solid yellow;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .rank-item:first-child { border-color: gold; }
+    .rank-item:nth-child(2) { border-color: silver; }
+    .rank-item:nth-child(3) { border-color: #cd7f32; }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .emoji {
+      font-size: 24px;
+    }
+
+    .vip-tag {
+      color: gold;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .admin-tag {
+      color: red;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .sua-posicao {
+      margin: 40px auto;
+      max-width: 600px;
+      background-color: #1a1a1a;
+      border: 2px solid yellow;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
+    }
+
+    .sua-posicao span {
+      color: yellow;
+      font-size: 20px;
+    }
+
+    .sua-posicao strong {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="top-left"><a href="/chat">Chat<span style="font-weight:900;">FURIA</span></a></div>
+    <div class="top-right">
+      <a href="/news">Notícias</a>
+      <a href="/ranking">Ranking</a>
+      <a href="https://www.furia.gg/" target="_blank">Loja</a>
+      <a href="/painel">Minha Conta</a>
+      {% if user %}
+        <img src="{{ user.foto_url or '/static/images/default_avatar.png' }}" alt="avatar" class="avatar">
+      {% endif %}
+    </div>
+  </header>
+
+  <main>
+    <h1>🏆 Top 10 Mais Ativos no Chat</h1>
+
+    {% if minha_posicao %}
+      <div class="sua-posicao">
+        👤 <strong>{{ user.nick }}</strong>, sua posição é:
+        <span>{{ minha_posicao }}º</span> com <strong>{{ minhas_msgs }}</strong> mensagens.
+      </div>
+    {% else %}
+      <div class="sua-posicao" style="border-color: red;">
+        ⚠️ Você ainda não enviou nenhuma mensagem no chat.
+      </div>
+    {% endif %}
+
+    <div class="ranking">
+      {% for stat in top_users %}
+        <div class="rank-item">
+          <div class="user-info">
+            <span class="emoji">
+              {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}º{% endif %}
+            </span>
+            <span>
+              {{ stat.user.nick }}
+              {% if stat.user.is_vip %}<span class="vip-tag">⭐ VIP</span>{% endif %}
+              {% if stat.user.email == 'admin@furia.gg' %}<span class="admin-tag">🛡️ Admin</span>{% endif %}
+            </span>
+          </div>
+          <div>
+            {{ stat.total_mensagens }} msg
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </main>
+</body>
+</html>

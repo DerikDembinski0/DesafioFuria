@@ -23,3 +23,10 @@ class User(db.Model):
 
     def check_password(self, senha):
         return check_password_hash(self.senha_hash, senha)
+
+class ChatStats(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True)
+    total_mensagens = db.Column(db.Integer, default=0)
+
+    user = db.relationship("User", backref=db.backref("chat_stats", uselist=False))

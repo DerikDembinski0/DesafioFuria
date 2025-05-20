@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>FURIA News</title>
+  <link rel="icon" href="/static/images/favicon.ico">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #111;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .top-bar {
+      width: 100%;
+      height: 60px;
+      background-color: yellow;
+      color: black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+      font-weight: bold;
+      border-bottom: 3px solid #000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .top-left {
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .top-left a {
+      text-decoration: none;
+      color: black;
+    }
+
+    .top-left a:hover {
+      text-decoration: underline;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .top-right a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: black;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .top-right a:hover {
+      text-decoration: underline;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-left: 20px;
+      border: 2px solid #000;
+    }
+
+    main {
+      margin-top: 100px;
+      padding: 20px 40px 40px;
+    }
+
+    .news-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      border-left: 5px solid yellow;
+      padding-left: 15px;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card {
+      background-color: #1a1a1a;
+      border: 2px solid yellow;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 0 10px rgba(255, 255, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .news-card.furia {
+      border: 2px solid red;
+    }
+
+    .news-card:hover {
+      transform: scale(1.02);
+    }
+
+    .news-card h3 {
+      color: yellow;
+      margin-top: 0;
+    }
+
+    .news-card p {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .news-card a {
+      margin-top: 10px;
+      align-self: flex-start;
+      background-color: yellow;
+      color: black;
+      padding: 8px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+
+    .news-card a:hover {
+      background-color: #ffc800;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <div class="top-left"><a href="/chat">Chat<span style="font-weight:900;">FURIA</span></a></div>
+    <div class="top-right">
+      <a href="/news">Notícias</a>
+      <a href="/ranking">Ranking</a>
+      <a href="https://www.furia.gg/" target="_blank">Loja</a>
+      <a href="/painel">Minha Conta</a>
+    {% if user %}
+      <img src="{{ user.foto_url or '/static/images/default_avatar.png' }}" alt="avatar" class="avatar">
+    {% endif %}
+    </div>
+  </header>
+
+  <main>
+    <h1 class="news-title">Últimas Notícias</h1>
+
+    {% if total < 10 %}
+      <p style="color: red; font-weight: bold; margin-bottom: 20px;">
+        ⚠️ Apenas {{ total }} notícias disponíveis no momento. Algumas podem ter sido filtradas.
+      </p>
+    {% endif %}
+
+    <div class="news-grid">
+      {% for item in news_list %}
+        <div class="news-card {% if item.is_furia %}furia{% endif %}">
+          {% if item.image %}
+            <img src="{{ item.image }}" alt="Imagem da notícia" style="width: 100%; border-radius: 8px; margin-bottom: 10px;">
+          {% endif %}
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.date }}</p>
+          <a href="{{ item.link }}" target="_blank">Ler mais</a>
+        </div>
+      {% endfor %}
+    </div>
+  </main>
+</body>
+</html>
