@@ -39,6 +39,9 @@ Você abre no navegador e vê o chat funcionando de verdade com outras pessoas e
 
 ---
 
+## Video do projeto
+
+[![Assista ao vídeo](https://img.youtube.com/vi/dZfbgXXoLVM/maxresdefault.jpg)](https://www.youtube.com/watch?v=dZfbgXXoLVM)
 
 ## 🚀 Como rodar o projeto (passo a passo fácil)
 
